@@ -150,7 +150,7 @@ describe('Blog API resource', function() {
           expect(resBlogPost.author).to.equal(blogpost.author);
           expect(resBlogPost.title).to.equal(blogpost.title);
           expect(resBlogPost.content).to.equal(blogpost.content);
-          expect(resBlogPost.date).to.contain(blogpost.date);
+          expect(resBlogPost.created).to.contain(blogpost.created);
         });
     });
   });
@@ -160,40 +160,32 @@ describe('Blog API resource', function() {
     // then prove that the restaurant we get back has
     // right keys, and that `id` is there (which means
     // the data was inserted into db)
-    it('should add a new restaurant', function() {
+    it('should add a new blog post', function() {
 
-      const newRestaurant = generateRestaurantData();
-      let mostRecentGrade;
+      const newBlogPost = generateBlogData();
 
       return chai.request(app)
-        .post('/restaurants')
-        .send(newRestaurant)
+        .post('/posts')
+        .send(newBlogPost)
         .then(function(res) {
           expect(res).to.have.status(201);
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
           expect(res.body).to.include.keys(
-            'id', 'name', 'cuisine', 'borough', 'grade', 'address');
-          expect(res.body.name).to.equal(newRestaurant.name);
-          // cause Mongo should have created id on insertion
+            'id', 'author', 'content', 'title', 'created');
+          // because Mongo should have created id on insertion
           expect(res.body.id).to.not.be.null;
-          expect(res.body.cuisine).to.equal(newRestaurant.cuisine);
-          expect(res.body.borough).to.equal(newRestaurant.borough);
-
-          mostRecentGrade = newRestaurant.grades.sort(
-            (a, b) => b.date - a.date)[0].grade;
-
-          expect(res.body.grade).to.equal(mostRecentGrade);
-          return Restaurant.findById(res.body.id);
+          expect(res.body.author).to.equal(newBlogPost.author)
+          expect(res.body.content)to.equal(newBlogPost.content)
+          expect(res.body.title)to.equal(newBlogPost.title)
+          expect(res.body.created)to.equal(newBlogPost.created)
+          return BlogPost.findById(res.body.id);
         })
-        .then(function(restaurant) {
-          expect(restaurant.name).to.equal(newRestaurant.name);
-          expect(restaurant.cuisine).to.equal(newRestaurant.cuisine);
-          expect(restaurant.borough).to.equal(newRestaurant.borough);
-          expect(restaurant.grade).to.equal(mostRecentGrade);
-          expect(restaurant.address.building).to.equal(newRestaurant.address.building);
-          expect(restaurant.address.street).to.equal(newRestaurant.address.street);
-          expect(restaurant.address.zipcode).to.equal(newRestaurant.address.zipcode);
+        .then(function(blogpost) {
+          expect(blogpost.author).to.equal(newBlogPost.author)
+          expect(blogpost.content).to.equal(newBlogPost.content)
+          expect(blogpost.title).to.equal(newBlogPost.title)
+          expect(blogpost.created).to.equal(newBlogPost.created)
         });
     });
   });
