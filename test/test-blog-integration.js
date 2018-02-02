@@ -38,7 +38,7 @@ function generateAuthor() {
 
 // used to generate data to put in db
 function generateTitle() {
-  return faker.companey.catchPhrase()
+  return faker.company.catchPhrase()
 }
 
 // used to generate data to put in db
