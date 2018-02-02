@@ -5,7 +5,8 @@
   "repository": "https://github.com/Thinkful-Ed/blog-app-mongoose-challenge-solution",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha --exit"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
