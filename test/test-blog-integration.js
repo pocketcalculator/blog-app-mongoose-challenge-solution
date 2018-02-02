@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 // this module
 const expect = chai.expect;
 
-const {Restaurant} = require('../models');
+const {BlogPost} = require('../models');
 const {app, runServer, closeServer} = require('../server');
 const {TEST_DATABASE_URL} = require('../config');
 
@@ -20,54 +20,45 @@ chai.use(chaiHttp);
 // we use the Faker library to automatically
 // generate placeholder values for author, title, content
 // and then we insert that data into mongo
-function seedRestaurantData() {
-  console.info('seeding restaurant data');
+function seedBlogData() {
+  console.info('seeding blog data');
   const seedData = [];
 
   for (let i=1; i<=10; i++) {
-    seedData.push(generateRestaurantData());
+    seedData.push(generateBlogData());
   }
   // this will return a promise
-  return Restaurant.insertMany(seedData);
+  return BlogPost.insertMany(seedData);
 }
 
 // used to generate data to put in db
-function generateBoroughName() {
-  const boroughs = [
-    'Manhattan', 'Queens', 'Brooklyn', 'Bronx', 'Staten Island'];
-  return boroughs[Math.floor(Math.random() * boroughs.length)];
+function generateAuthor() {
+  return faker.name.findName()
 }
 
 // used to generate data to put in db
-function generateCuisineType() {
-  const cuisines = ['Italian', 'Thai', 'Colombian'];
-  return cuisines[Math.floor(Math.random() * cuisines.length)];
+function generateTitle() {
+  return faker.companey.catchPhrase()
 }
 
 // used to generate data to put in db
-function generateGrade() {
-  const grades = ['A', 'B', 'C', 'D', 'F'];
-  const grade = grades[Math.floor(Math.random() * grades.length)];
-  return {
-    date: faker.date.past(),
-    grade: grade
-  };
+function generateContent() {
+  return faker.lorem.sentence()
+}
+
+function generateDate() {
+  return faker.date.past()
 }
 
 // generate an object represnting a restaurant.
 // can be used to generate seed data for db
 // or request.body data
-function generateRestaurantData() {
+function generateBlogData() {
   return {
-    name: faker.company.companyName(),
-    borough: generateBoroughName(),
-    cuisine: generateCuisineType(),
-    address: {
-      building: faker.address.streetAddress(),
-      street: faker.address.streetName(),
-      zipcode: faker.address.zipCode()
-    },
-    grades: [generateGrade(), generateGrade(), generateGrade()]
+    author: generateAuthor(),
+    title: generateTitle(),
+    content: generateContent(),
+    created: generateDate()
   };
 }
 
@@ -81,7 +72,7 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
-describe('Restaurants API resource', function() {
+describe('Blog API resource', function() {
 
   // we need each of these hook functions to return a promise
   // otherwise we'd need to call a `done` callback. `runServer`,
@@ -92,7 +83,7 @@ describe('Restaurants API resource', function() {
   });
 
   beforeEach(function() {
-    return seedRestaurantData();
+    return seedBlogData();
   });
 
   afterEach(function() {
@@ -108,7 +99,7 @@ describe('Restaurants API resource', function() {
   // on proving something small
   describe('GET endpoint', function() {
 
-    it('should return all existing restaurants', function() {
+    it('should return all existing blog posts', function() {
       // strategy:
       //    1. get back all restaurants returned by by GET request to `/restaurants`
       //    2. prove res has right status, data type
@@ -119,50 +110,47 @@ describe('Restaurants API resource', function() {
       // `.then()` calls below, so declare it here so can modify in place
       let res;
       return chai.request(app)
-        .get('/restaurants')
+        .get('/posts')
         .then(function(_res) {
           // so subsequent .then blocks can access response object
           res = _res;
           expect(res).to.have.status(200);
           // otherwise our db seeding didn't work
-          expect(res.body.restaurants).to.have.length.of.at.least(1);
-          return Restaurant.count();
+          expect(res.body.blogposts).to.have.length.of.at.least(1);
+          return BlogPost.count();
         })
         .then(function(count) {
-          expect(res.body.restaurants).to.have.length.of(count);
+          expect(res.body.blogposts).to.have.length.of(count);
         });
     });
 
 
-    it('should return restaurants with right fields', function() {
+    it('should return blog posts with right fields', function() {
       // Strategy: Get back all restaurants, and ensure they have expected keys
 
-      let resRestaurant;
+      let blogpost;
       return chai.request(app)
-        .get('/restaurants')
+        .get('/posts')
         .then(function(res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
-          expect(res.body.restaurants).to.be.a('array');
-          expect(res.body.restaurants).to.have.length.of.at.least(1);
+          expect(res.body.blogposts).to.be.a('array');
+          expect(res.body.blogposts).to.have.length.of.at.least(1);
 
-          res.body.restaurants.forEach(function(restaurant) {
-            expect(restaurant).to.be.a('object');
-            expect(restaurant).to.include.keys(
-              'id', 'name', 'cuisine', 'borough', 'grade', 'address');
+          res.body.blogposts.forEach(function(blogpost) {
+            expect(blogpost).to.be.a('object');
+            expect(blogpost).to.include.keys(
+              'id', 'author', 'title', 'content', 'created');
           });
-          resRestaurant = res.body.restaurants[0];
-          return Restaurant.findById(resRestaurant.id);
+          resBlogPost = res.body.blogposts[0];
+          return BlogPost.findById(resBlogPost.id);
         })
-        .then(function(restaurant) {
-
-          expect(resRestaurant.id).to.equal(restaurant.id);
-          expect(resRestaurant.name).to.equal(restaurant.name);
-          expect(resRestaurant.cuisine).to.equal(restaurant.cuisine);
-          expect(resRestaurant.borough).to.equal(restaurant.borough);
-          expect(resRestaurant.address).to.contain(restaurant.address.building);
-
-          expect(resRestaurant.grade).to.equal(restaurant.grade);
+        .then(function(blogpost) {
+          expect(resBlogPost.id).to.equal(blogpost.id);
+          expect(resBlogPost.author).to.equal(blogpost.author);
+          expect(resBlogPost.title).to.equal(blogpost.title);
+          expect(resBlogPost.content).to.equal(blogpost.content);
+          expect(resBlogPost.date).to.contain(blogpost.date);
         });
     });
   });
