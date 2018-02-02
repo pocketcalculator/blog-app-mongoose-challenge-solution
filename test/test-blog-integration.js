@@ -50,7 +50,7 @@ function generateDate() {
   return faker.date.past()
 }
 
-// generate an object represnting a restaurant.
+// generate an object represnting a blog post.
 // can be used to generate seed data for db
 // or request.body data
 function generateBlogData() {
@@ -76,7 +76,7 @@ describe('Blog API resource', function() {
 
   // we need each of these hook functions to return a promise
   // otherwise we'd need to call a `done` callback. `runServer`,
-  // `seedRestaurantData` and `tearDownDb` each return a promise,
+  // `seedblog postData` and `tearDownDb` each return a promise,
   // so we return the value returned by these function calls.
   before(function() {
     return runServer(TEST_DATABASE_URL);
@@ -101,9 +101,9 @@ describe('Blog API resource', function() {
 
     it('should return all existing blog posts', function() {
       // strategy:
-      //    1. get back all restaurants returned by by GET request to `/restaurants`
+      //    1. get back all blog posts returned by by GET request to `/blog posts`
       //    2. prove res has right status, data type
-      //    3. prove the number of restaurants we got back is equal to number
+      //    3. prove the number of blog posts we got back is equal to number
       //       in db.
       //
       // need to have access to mutate and access `res` across
@@ -126,7 +126,7 @@ describe('Blog API resource', function() {
 
 
     it('should return blog posts with right fields', function() {
-      // Strategy: Get back all restaurants, and ensure they have expected keys
+      // Strategy: Get back all blog posts, and ensure they have expected keys
 
       let blogpost;
       return chai.request(app)
@@ -157,7 +157,7 @@ describe('Blog API resource', function() {
 
   describe('POST endpoint', function() {
     // strategy: make a POST request with data,
-    // then prove that the restaurant we get back has
+    // then prove that the blog post we get back has
     // right keys, and that `id` is there (which means
     // the data was inserted into db)
     it('should add a new blog post', function() {
@@ -228,10 +228,10 @@ describe('Blog API resource', function() {
 
   describe('DELETE endpoint', function() {
     // strategy:
-    //  1. get a restaurant
-    //  2. make a DELETE request for that restaurant's id
+    //  1. get a blog post
+    //  2. make a DELETE request for that blog post's id
     //  3. assert that response has right status code
-    //  4. prove that restaurant with the id doesn't exist in db anymore
+    //  4. prove that blog post with the id doesn't exist in db anymore
     it('delete a blog post by id', function() {
 
       let blogpost;
