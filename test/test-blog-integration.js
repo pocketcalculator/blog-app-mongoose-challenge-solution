@@ -180,7 +180,7 @@ describe('Blog API resource', function() {
             'id', 'author', 'content', 'title', 'created');
           // because Mongo should have created id on insertion
           expect(res.body.id).to.not.be.null;
-          expect(res.body.author).to.equal(newBlogPost.author)
+          expect(res.body.author).to.equal(`${newBlogPost.author.firstName} ${newBlogPost.author.lastName}`.trim())
           expect(res.body.content).to.equal(newBlogPost.content)
           expect(res.body.title).to.equal(newBlogPost.title)
           expect(res.body.created).to.equal(newBlogPost.created)
