@@ -176,9 +176,9 @@ describe('Blog API resource', function() {
           // because Mongo should have created id on insertion
           expect(res.body.id).to.not.be.null;
           expect(res.body.author).to.equal(newBlogPost.author)
-          expect(res.body.content)to.equal(newBlogPost.content)
-          expect(res.body.title)to.equal(newBlogPost.title)
-          expect(res.body.created)to.equal(newBlogPost.created)
+          expect(res.body.content).to.equal(newBlogPost.content)
+          expect(res.body.title).to.equal(newBlogPost.title)
+          expect(res.body.created).to.equal(newBlogPost.created)
           return BlogPost.findById(res.body.id);
         })
         .then(function(blogpost) {
