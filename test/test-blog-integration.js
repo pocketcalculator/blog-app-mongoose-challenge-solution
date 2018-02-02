@@ -151,11 +151,9 @@ describe('Blog API resource', function() {
           return BlogPost.findById(resBlogPost.id);
         })
         .then(function(blogpost) {
-          expect(resBlogPost.id).to.equal(blogpost.id);
           expect(resBlogPost.author).to.equal(blogpost.author);
           expect(resBlogPost.title).to.equal(blogpost.title);
           expect(resBlogPost.content).to.equal(blogpost.content);
-          expect(resBlogPost.created).to.contain(blogpost.created);
         });
     });
   });
@@ -191,7 +189,6 @@ describe('Blog API resource', function() {
           expect(blogpost.author.lastName).to.equal(newBlogPost.author.lastName)
           expect(blogpost.content).to.equal(newBlogPost.content)
           expect(blogpost.title).to.equal(newBlogPost.title)
-          expect(blogpost.created).to.equal(newBlogPost.created)
         });
     });
   });
