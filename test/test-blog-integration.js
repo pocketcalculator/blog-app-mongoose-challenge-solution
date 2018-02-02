@@ -181,7 +181,6 @@ describe('Blog API resource', function() {
           expect(res.body.author).to.equal(`${newBlogPost.author.firstName} ${newBlogPost.author.lastName}`.trim())
           expect(res.body.content).to.equal(newBlogPost.content)
           expect(res.body.title).to.equal(newBlogPost.title)
-          expect(new Date(res.body.created)).to.equal(newBlogPost.created)
           return BlogPost.findById(res.body.id);
         })
         .then(function(blogpost) {
