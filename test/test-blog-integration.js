@@ -193,35 +193,35 @@ describe('Blog API resource', function() {
   describe('PUT endpoint', function() {
 
     // strategy:
-    //  1. Get an existing restaurant from db
-    //  2. Make a PUT request to update that restaurant
-    //  3. Prove restaurant returned by request contains data we sent
-    //  4. Prove restaurant in db is correctly updated
+    //  1. Get an existing blog post from db
+    //  2. Make a PUT request to update that post
+    //  3. Prove blog post returned by request contains data we sent
+    //  4. Prove blog post in db is correctly updated
     it('should update fields you send over', function() {
       const updateData = {
-        name: 'fofofofofofofof',
-        cuisine: 'futuristic fusion'
+        title: 'fofofofofofofof',
+        content: 'I like to eat futuristic fusion!'
       };
 
-      return Restaurant
+      return BlogPost
         .findOne()
-        .then(function(restaurant) {
-          updateData.id = restaurant.id;
+        .then(function(blogpost) {
+          updateData.id = blogpost.id;
 
           // make request then inspect it to make sure it reflects
           // data we sent
           return chai.request(app)
-            .put(`/restaurants/${restaurant.id}`)
+            .put(`/posts/${blogpost.id}`)
             .send(updateData);
         })
         .then(function(res) {
           expect(res).to.have.status(204);
 
-          return Restaurant.findById(updateData.id);
+          return BlogPost.findById(updateData.id);
         })
-        .then(function(restaurant) {
-          expect(restaurant.name).to.equal(updateData.name);
-          expect(restaurant.cuisine).to.equal(updateData.cuisine);
+        .then(function(blogpost) {
+          expect(blogpost.title).to.equal(updateData.title);
+          expect(blogpost.content).to.equal(updateData.content);
         });
     });
   });
@@ -232,22 +232,22 @@ describe('Blog API resource', function() {
     //  2. make a DELETE request for that restaurant's id
     //  3. assert that response has right status code
     //  4. prove that restaurant with the id doesn't exist in db anymore
-    it('delete a restaurant by id', function() {
+    it('delete a blog post by id', function() {
 
-      let restaurant;
+      let blogpost;
 
-      return Restaurant
+      return BlogPost
         .findOne()
-        .then(function(_restaurant) {
-          restaurant = _restaurant;
-          return chai.request(app).delete(`/restaurants/${restaurant.id}`);
+        .then(function(_blogpost) {
+          blogpost = _blogpost;
+          return chai.request(app).delete(`/posts/${blogpost.id}`);
         })
         .then(function(res) {
           expect(res).to.have.status(204);
-          return Restaurant.findById(restaurant.id);
+          return BlogPost.findById(blogpost.id);
         })
-        .then(function(_restaurant) {
-          expect(_restaurant).to.be.null;
+        .then(function(_blogpost) {
+          expect(_blogpost).to.be.null;
         });
     });
   });
