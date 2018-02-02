@@ -38,6 +38,7 @@ function generateAuthor() {
   return {
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName()
+  }
 }
 
 // used to generate data to put in db
