@@ -33,7 +33,11 @@ function seedBlogData() {
 
 // used to generate data to put in db
 function generateAuthor() {
-  return faker.name.findName()
+  let firstName
+  let lastName
+  return {
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName()
 }
 
 // used to generate data to put in db
