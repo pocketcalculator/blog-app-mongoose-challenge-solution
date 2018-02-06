@@ -121,11 +121,11 @@ describe('Blog API resource', function() {
           res = _res;
           expect(res).to.have.status(200);
           // otherwise our db seeding didn't work
-          expect(res.body.blogposts).to.have.length.of.at.least(1);
+          expect(res.body).to.have.length.of.at.least(1);
           return BlogPost.count();
         })
         .then(function(count) {
-          expect(res.body.blogposts).to.have.length.of(count);
+          expect(res.body).to.have.length(count);
         });
     });
 
@@ -133,25 +133,25 @@ describe('Blog API resource', function() {
     it('should return blog posts with right fields', function() {
       // Strategy: Get back all blog posts, and ensure they have expected keys
 
-      let blogpost;
+      let resBlogPost;
       return chai.request(app)
         .get('/posts')
         .then(function(res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
-          expect(res.body.blogposts).to.be.a('array');
-          expect(res.body.blogposts).to.have.length.of.at.least(1);
+          expect(res.body).to.be.a('array');
+          expect(res.body).to.have.length.of.at.least(1);
 
-          res.body.blogposts.forEach(function(blogpost) {
+          res.body.forEach(function(blogpost) {
             expect(blogpost).to.be.a('object');
             expect(blogpost).to.include.keys(
               'id', 'author', 'title', 'content', 'created');
           });
-          resBlogPost = res.body.blogposts[0];
+          resBlogPost = res.body[0];
           return BlogPost.findById(resBlogPost.id);
         })
         .then(function(blogpost) {
-          expect(resBlogPost.author).to.equal(blogpost.author);
+          expect(resBlogPost.author).to.equal(`${blogpost.author.firstName} ${blogpost.author.lastName}`.trim());
           expect(resBlogPost.title).to.equal(blogpost.title);
           expect(resBlogPost.content).to.equal(blogpost.content);
         });
